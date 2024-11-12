@@ -12,24 +12,24 @@ pipeline {
         stage('Test') {
             steps {
                 // Beispiel: Test-Suite ausführen
-                sh 'echo "Running tests..."'
-                // Zum Beispiel: sh 'mvn test' für ein Maven-basiertes Projekt
+                bat 'echo "Running tests..."'
+                // Zum Beispiel: bat 'mvn test' für ein Maven-basiertes Projekt
             }
         }
         
         stage('Build') {
             steps {
                 // Beispiel: Build-Befehl ausführen
-                sh 'echo "Building project..."'
-                // Zum Beispiel: sh 'mvn package' für ein Maven-basiertes Projekt
+                bat 'echo "Building project..."'
+                // Zum Beispiel: bat 'mvn package' für ein Maven-basiertes Projekt
             }
         }
         
         stage('Deploy') {
             steps {
                 // Beispiel: Bereitstellungsskript ausführen
-                sh 'echo "Deploying to test environment..."'
-                // Hier könnte ein Deploy-Skript aufgerufen werden, z. B. sh './deploy.sh'
+                bat 'echo "Deploying to test environment..."'
+                // Hier könnte ein Deploy-Skript aufgerufen werden, z. B. bat './deploy.bat'
             }
         }
     }
@@ -47,4 +47,3 @@ pipeline {
         }
     }
 }
-
