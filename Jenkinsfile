@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Code aus dem Git-Repository abrufen
-                git url: 'https://github.com/Hitz-and-Co/BodyBalance.git', branch: 'main'
+                git url: 'https://github.com/Hitz-and-Co/BodyBalance', branch: 'main'
             }
         }
         
