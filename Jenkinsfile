@@ -8,15 +8,15 @@ pipeline {
         BACKEND_BRANCH = 'backend-branch'
     }
 
-    stages {
-        stage('Checkout Frontend') {
-            steps {
-                echo 'Checking out the frontend branch...'
-                dir('frontend') { // Separates Arbeitsverzeichnis für das Frontend
-                    git url: env.FRONTEND_REPO, branch: env.FRONTEND_BRANCH
-                }
-            }
+ stage('Checkout Frontend') {
+    steps {
+        echo 'Checking out the frontend branch...'
+        dir('frontend') { // Separates Arbeitsverzeichnis für das Frontend
+            git url: 'https://github.com/Hitz-and-Co/BodyBalance', branch: 'Frontend'
         }
+    }
+}
+
 
         stage('Install Frontend Dependencies') {
             steps {
@@ -37,13 +37,14 @@ pipeline {
         }
 
         stage('Checkout Backend') {
-            steps {
-                echo 'Checking out the backend branch...'
-                dir('backend') { // Separates Arbeitsverzeichnis für das Backend
-                    git url: env.BACKEND_REPO, branch: env.BACKEND_BRANCH
-                }
-            }
+    steps {
+        echo 'Checking out the backend branch...'
+        dir('backend') { // Separates Arbeitsverzeichnis für das Backend
+            git url: 'https://github.com/Hitz-and-Co/BodyBalance', branch: 'Backend'
         }
+    }
+}
+
 
         stage('Install Backend Dependencies') {
             steps {
