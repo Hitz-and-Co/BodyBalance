@@ -4,8 +4,8 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                echo 'Checking out code from the main branch...'
-                git url: 'https://github.com/Hitz-and-Co/BodyBalance', branch: 'main'
+                echo 'Checking out code from the code branch...'
+                git url: 'https://github.com/Hitz-and-Co/BodyBalance', branch: 'code'
             }
         }
 
@@ -25,7 +25,7 @@ pipeline {
 
         stage('Deploy Application') {
             steps {
-                echo 'Deploying application to the test environment...'
+                echo 'Deploying application...'
                 bat 'echo Deploy logic here'
             }
         }
@@ -33,14 +33,13 @@ pipeline {
 
     post {
         always {
-            echo 'Archiving build artifacts...'
-            archiveArtifacts artifacts: '**/*', allowEmptyArchive: true
+            echo 'Pipeline finished. Archiving logs and artifacts...'
         }
         success {
             echo 'Pipeline completed successfully.'
         }
         failure {
-            echo 'Pipeline failed. Check the logs for more details.'
+            echo 'Pipeline failed. Please check the logs for details.'
         }
     }
 }
