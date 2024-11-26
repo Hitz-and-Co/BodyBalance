@@ -2,7 +2,14 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout Code') {
+        stage('Checkout Main Branch') {
+            steps {
+                echo 'Checking out code from the main branch...'
+                git url: 'https://github.com/Hitz-and-Co/BodyBalance', branch: 'main'
+            }
+        }
+
+        stage('Checkout Code Branch') {
             steps {
                 echo 'Checking out code from the code branch...'
                 git url: 'https://github.com/Hitz-and-Co/BodyBalance', branch: 'code'
