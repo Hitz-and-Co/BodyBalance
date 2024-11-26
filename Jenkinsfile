@@ -1,20 +1,11 @@
 pipeline {
     agent any
 
-    environment {
-        FRONTEND_REPO = 'https://github.com/Hitz-and-Co/BodyBalance'
-        FRONTEND_BRANCH = 'Frontend'
-        BACKEND_REPO = 'https://github.com/Hitz-and-Co/BodyBalance'
-        BACKEND_BRANCH = 'Backend'
-    }
-
     stages {
-        stage('Checkout Frontend') {
+        stage('Checkout Code') {
             steps {
-                echo 'Checking out the frontend branch...'
-                dir('frontend') { // Separates Arbeitsverzeichnis für das Frontend
-                    git url: FRONTEND_REPO, branch: FRONTEND_BRANCH
-                }
+                echo 'Checking out code from the main branch...'
+                git url: 'https://github.com/Hitz-and-Co/BodyBalance', branch: 'main'
             }
         }
 
@@ -32,15 +23,6 @@ pipeline {
                 echo 'Building the frontend...'
                 dir('frontend') {
                     bat 'npm run build'
-                }
-            }
-        }
-
-        stage('Checkout Backend') {
-            steps {
-                echo 'Checking out the backend branch...'
-                dir('backend') { // Separates Arbeitsverzeichnis für das Backend
-                    git url: BACKEND_REPO, branch: BACKEND_BRANCH
                 }
             }
         }
