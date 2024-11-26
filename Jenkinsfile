@@ -2,70 +2,80 @@ pipeline {
     agent any
 
     environment {
-        PROJECT_REPO = 'https://github.com/Hitz-and-Co/BodyBalance'
-        BRANCH = 'main'
-        ARTIFACT_DIR = 'target'
+        FRONTEND_REPO = 'https://github.com/Hitz-and-Co/BodyBalance/tree/Frontend'
+        FRONTEND_BRANCH = 'frontend-branch'
+        BACKEND_REPO = 'https://github.com/Hitz-and-Co/BodyBalance/tree/Backend'
+        BACKEND_BRANCH = 'backend-branch'
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout Frontend') {
             steps {
-                echo 'Checking out the project...'
-                git url: env.PROJECT_REPO, branch: env.BRANCH
+                echo 'Checking out the frontend branch...'
+                dir('frontend') { // Separates Arbeitsverzeichnis für das Frontend
+                    git url: env.FRONTEND_REPO, branch: env.FRONTEND_BRANCH
+                }
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Install Frontend Dependencies') {
             steps {
-                echo 'Installing project dependencies...'
-                // Beispiel: Falls ein Node.js-Frontend und ein Java-Backend verwendet wird:
-                bat '''
-                    cd frontend && npm install
-                    cd ../backend && mvn clean install
-                '''
+                echo 'Installing frontend dependencies...'
+                dir('frontend') {
+                    bat 'npm install'
+                }
             }
         }
 
-        stage('Run Tests') {
+        stage('Build Frontend') {
             steps {
-                echo 'Running automated tests...'
-                // Beispiel: Frontend- und Backend-Tests ausführen
-                bat '''
-                    cd frontend && npm test
-                    cd ../backend && mvn test
-                '''
+                echo 'Building the frontend...'
+                dir('frontend') {
+                    bat 'npm run build'
+                }
             }
         }
 
-        stage('Build Application') {
+        stage('Checkout Backend') {
             steps {
-                echo 'Building the application...'
-                // Beispiel: Build für Frontend und Backend
-                bat '''
-                    cd frontend && npm run build
-                    cd ../backend && mvn package
-                '''
+                echo 'Checking out the backend branch...'
+                dir('backend') { // Separates Arbeitsverzeichnis für das Backend
+                    git url: env.BACKEND_REPO, branch: env.BACKEND_BRANCH
+                }
             }
         }
 
-        stage('Static Code Analysis') {
+        stage('Install Backend Dependencies') {
             steps {
-                echo 'Running static code analysis...'
-                // Beispiel: Verwendung von Tools wie SonarQube oder ESLint
-                bat '''
-                    cd frontend && npm run lint
-                    cd ../backend && mvn sonar:sonar
-                '''
+                echo 'Installing backend dependencies...'
+                dir('backend') {
+                    bat 'mvn clean install'
+                }
             }
         }
 
-        stage('Deploy to Test Environment') {
+        stage('Run Backend Tests') {
+            steps {
+                echo 'Running backend tests...'
+                dir('backend') {
+                    bat 'mvn test'
+                }
+            }
+        }
+
+        stage('Build Backend') {
+            steps {
+                echo 'Building the backend...'
+                dir('backend') {
+                    bat 'mvn package'
+                }
+            }
+        }
+
+        stage('Deploy Application') {
             steps {
                 echo 'Deploying application to the test environment...'
-                // Beispiel: Deployment in ein Docker-Container-basiertes Testsystem
-                bat '''
-                    docker-compose -f docker-compose-test.yml up -d
-                '''
+                bat 'echo Deploy logic here'
             }
         }
     }
@@ -73,7 +83,9 @@ pipeline {
     post {
         always {
             echo 'Archiving build artifacts...'
-            archiveArtifacts artifacts: "${ARTIFACT_DIR}/**/*.jar", allowEmptyArchive: true
+            dir('backend') {
+                archiveArtifacts artifacts: 'target/**/*.jar', allowEmptyArchive: true
+            }
         }
         success {
             echo 'Pipeline completed successfully.'
