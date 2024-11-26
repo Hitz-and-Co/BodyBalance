@@ -1,49 +1,85 @@
 pipeline {
     agent any
-    
+
+    environment {
+        PROJECT_REPO = 'https://github.com/Hitz-and-Co/BodyBalance'
+        BRANCH = 'main'
+        ARTIFACT_DIR = 'target'
+    }
+
     stages {
         stage('Checkout') {
             steps {
-                // Code aus dem Git-Repository abrufen
-                git url: 'https://github.com/Hitz-and-Co/BodyBalance', branch: 'main'
+                echo 'Checking out the project...'
+                git url: env.PROJECT_REPO, branch: env.BRANCH
             }
         }
-        
-        stage('Test') {
+
+        stage('Install Dependencies') {
             steps {
-                // Beispiel: Test-Suite ausführen
-                bat 'echo "Running tests..."'
-                // Zum Beispiel: bat 'mvn test' für ein Maven-basiertes Projekt
+                echo 'Installing project dependencies...'
+                // Beispiel: Falls ein Node.js-Frontend und ein Java-Backend verwendet wird:
+                bat '''
+                    cd frontend && npm install
+                    cd ../backend && mvn clean install
+                '''
             }
         }
-        
-        stage('Build') {
+
+        stage('Run Tests') {
             steps {
-                // Beispiel: Build-Befehl ausführen
-                bat 'echo "Building project..."'
-                // Zum Beispiel: bat 'mvn package' für ein Maven-basiertes Projekt
+                echo 'Running automated tests...'
+                // Beispiel: Frontend- und Backend-Tests ausführen
+                bat '''
+                    cd frontend && npm test
+                    cd ../backend && mvn test
+                '''
             }
         }
-        
-        stage('Deploy') {
+
+        stage('Build Application') {
             steps {
-                // Beispiel: Bereitstellungsskript ausführen
-                bat 'echo "Deploying to test environment..."'
-                // Hier könnte ein Deploy-Skript aufgerufen werden, z. B. bat './deploy.bat'
+                echo 'Building the application...'
+                // Beispiel: Build für Frontend und Backend
+                bat '''
+                    cd frontend && npm run build
+                    cd ../backend && mvn package
+                '''
+            }
+        }
+
+        stage('Static Code Analysis') {
+            steps {
+                echo 'Running static code analysis...'
+                // Beispiel: Verwendung von Tools wie SonarQube oder ESLint
+                bat '''
+                    cd frontend && npm run lint
+                    cd ../backend && mvn sonar:sonar
+                '''
+            }
+        }
+
+        stage('Deploy to Test Environment') {
+            steps {
+                echo 'Deploying application to the test environment...'
+                // Beispiel: Deployment in ein Docker-Container-basiertes Testsystem
+                bat '''
+                    docker-compose -f docker-compose-test.yml up -d
+                '''
             }
         }
     }
-    
+
     post {
         always {
-            // Log speicher und Berichterstellung
-            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
+            echo 'Archiving build artifacts...'
+            archiveArtifacts artifacts: "${ARTIFACT_DIR}/**/*.jar", allowEmptyArchive: true
         }
         success {
             echo 'Pipeline completed successfully.'
         }
         failure {
-            echo 'Pipeline failed.'
+            echo 'Pipeline failed. Check the logs for more details.'
         }
     }
 }
