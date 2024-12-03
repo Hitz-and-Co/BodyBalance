@@ -12,7 +12,7 @@ pipeline {
         stage('Checkout Code Branch') {
             steps {
                 echo 'Checking out code from the code branch...'
-                git url: 'https://github.com/Hitz-and-Co/BodyBalance', branch: 'code'
+                git url: 'https://github.com/Hitz-and-Co/BodyBalance/tree/Code', branch: 'code'
             }
         }
 
