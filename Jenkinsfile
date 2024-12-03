@@ -2,13 +2,11 @@ pipeline {
     agent any
 
     triggers {
-        // Automatisches Auslösen eines Builds bei jedem Push in das Repository
-        githubPush()
+        githubPush() // Automatische Auslösung bei jedem Push
     }
 
     environment {
-        // Umgebungsvariablen für den Build-Prozess, z. B. für Maven
-        MAVEN_HOME = tool name: 'Maven 3.6.3', type: 'ToolLocation'
+        MAVEN_HOME = tool name: 'Maven 3.9.9', type: 'ToolLocation' // Hier sicherstellen, dass Maven 3.6.3 konfiguriert ist
     }
 
     stages {
@@ -78,9 +76,12 @@ pipeline {
     post {
         always {
             echo 'Pipeline finished. Archiving logs and artifacts...'
-            // Log-Dateien und Artefakte archivieren
-            archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
-            junit '**/target/surefire-reports/*.xml'
+            // Um sicherzustellen, dass der `archiveArtifacts`-Schritt im richtigen Kontext ausgeführt wird,
+            // muss er innerhalb eines `node`-Blocks sein.
+            node {
+                archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
+                junit '**/target/surefire-reports/*.xml'
+            }
         }
 
         success {
