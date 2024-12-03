@@ -1,13 +1,5 @@
 pipeline {
-    agent any
-
-    triggers {
-        githubPush() // Automatische Auslösung bei jedem Push
-    }
-
-    environment {
-        MAVEN_HOME = tool name: 'Maven 3.9.9', type: 'ToolLocation' // Hier sicherstellen, dass Maven 3.6.3 konfiguriert ist
-    }
+    agent any  // Dies stellt sicher, dass die gesamte Pipeline auf einem beliebigen verfügbaren Agenten ausgeführt wird
 
     stages {
         stage('Checkout Main Branch') {
@@ -15,7 +7,6 @@ pipeline {
                 script {
                     try {
                         echo 'Checking out code from the main branch...'
-                        // Git-Checkout vom 'main'-Branch
                         git url: 'https://github.com/Hitz-and-Co/BodyBalance', branch: 'main'
                     } catch (Exception e) {
                         echo "Git Checkout failed: ${e.getMessage()}"
@@ -30,7 +21,6 @@ pipeline {
                 script {
                     try {
                         echo 'Building the application with Maven...'
-                        // Maven Build-Befehl
                         bat "${MAVEN_HOME}/bin/mvn clean package -DskipTests"
                     } catch (Exception e) {
                         echo "Build failed: ${e.getMessage()}"
@@ -45,9 +35,7 @@ pipeline {
                 script {
                     try {
                         echo 'Running tests...'
-                        // Maven-Test-Befehl
                         bat "${MAVEN_HOME}/bin/mvn test"
-                        // JUnit-Bericht sammeln
                         junit '**/target/surefire-reports/*.xml'
                     } catch (Exception e) {
                         echo "Tests failed: ${e.getMessage()}"
@@ -62,7 +50,6 @@ pipeline {
                 script {
                     try {
                         echo 'Deploying application to the test server...'
-                        // Beispiel für das Deployment (nehmen wir an, es wird eine WAR-Datei verwendet)
                         bat 'scp target/app.war user@test-server:/path/to/deploy'
                     } catch (Exception e) {
                         echo "Deployment failed: ${e.getMessage()}"
@@ -76,12 +63,8 @@ pipeline {
     post {
         always {
             echo 'Pipeline finished. Archiving logs and artifacts...'
-            // Um sicherzustellen, dass der `archiveArtifacts`-Schritt im richtigen Kontext ausgeführt wird,
-            // muss er innerhalb eines `node`-Blocks sein.
-            node {
-                archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
-                junit '**/target/surefire-reports/*.xml'
-            }
+            archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
+            junit '**/target/surefire-reports/*.xml'
         }
 
         success {
@@ -96,20 +79,4 @@ pipeline {
             notifyFailure()
         }
     }
-}
-
-// Beispiel für eine Benachrichtigungsfunktion bei Erfolg
-def notifySuccess() {
-    echo "Notifying success to Slack/Email/Other..."
-    // Hier könnte z.B. eine Benachrichtigung an Slack gesendet werden
-    // Beispiel für Slack-Benachrichtigung:
-    // slackSend channel: '#build-status', color: 'good', message: 'Build succeeded!'
-}
-
-// Beispiel für eine Benachrichtigungsfunktion bei Fehlern
-def notifyFailure() {
-    echo "Notifying failure to Slack/Email/Other..."
-    // Hier könnte z.B. eine Benachrichtigung an Slack gesendet werden
-    // Beispiel für Slack-Benachrichtigung:
-    // slackSend channel: '#build-status', color: 'danger', message: 'Build failed!'
 }
