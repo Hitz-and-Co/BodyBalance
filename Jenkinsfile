@@ -17,21 +17,6 @@ pipeline {
             }
         }
 
-        stage('Checkout Code Branch') {
-            steps {
-                script {
-                    try {
-                        echo 'Checking out code from the code branch...'
-                        // Git-Befehl, um den Code aus dem 'code'-Branch auszuchecken
-                        git url: 'https://github.com/Hitz-and-Co/BodyBalance', branch: 'code'
-                    } catch (Exception e) {
-                        echo "Git Checkout failed: ${e.getMessage()}"
-                        error "Checkout from code branch failed"
-                    }
-                }
-            }
-        }
-
         stage('Build Application') {
             steps {
                 echo 'Building the application...'
