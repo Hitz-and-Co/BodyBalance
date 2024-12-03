@@ -4,40 +4,32 @@ pipeline {
     stages {
         stage('Checkout Main Branch') {
             steps {
-                script {
-                    try {
-                        echo 'Checking out code from the main branch...'
-                        // Git-Befehl, um den Code aus dem 'main'-Branch auszuchecken
-                        git url: 'https://github.com/Hitz-and-Co/BodyBalance', branch: 'main'
-                    } catch (Exception e) {
-                        echo "Git Checkout failed: ${e.getMessage()}"
-                        error "Checkout from main branch failed"
-                    }
-                }
+                echo 'Checking out code from the main branch...'
+                git url: 'https://github.com/Hitz-and-Co/BodyBalance', branch: 'main'
             }
         }
+
+       
 
         stage('Build Application') {
             steps {
                 echo 'Building the application...'
-                // Beispielhafte Build-Logik für die Anwendung
-                bat 'echo Build logic here'
+                bat 'mvn clean package'
             }
         }
 
         stage('Run Tests') {
             steps {
                 echo 'Running tests...'
-                // Beispielhafte Test-Logik
-                bat 'echo Test logic here'
+                bat 'mvn test'
+                junit '**/target/surefire-reports/*.xml'
             }
         }
 
         stage('Deploy Application') {
             steps {
                 echo 'Deploying application...'
-                // Beispielhafte Deploy-Logik
-                bat 'echo Deploy logic here'
+                bat 'scp target/app.war user@test-server:/path/to/deploy'
             }
         }
     }
@@ -45,6 +37,7 @@ pipeline {
     post {
         always {
             echo 'Pipeline finished. Archiving logs and artifacts...'
+            archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
         }
         success {
             echo 'Pipeline completed successfully.'
