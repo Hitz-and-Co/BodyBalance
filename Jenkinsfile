@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn clean install'  // Ein Beispiel für den Maven-Befehl
+                bat 'mvn clean install'  // Ein Beispiel für den Maven-Befehl
             }
         }
     }
