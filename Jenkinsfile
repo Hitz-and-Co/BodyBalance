@@ -16,7 +16,7 @@ pipeline {
         stage('Build Backend') {
             steps {
                 dir('Backend') {
-                    sh 'dotnet build --configuration Release'
+                    bat 'dotnet build --configuration Release'
                 }
             }
         }
@@ -24,8 +24,8 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('Frontend') {
-                    sh 'npm install'
-                    sh 'npm run build'
+                    bat 'npm install'
+                    bat 'npm run build'
                 }
             }
         }
@@ -33,20 +33,20 @@ pipeline {
         stage('Run Tests') {
             steps {
                 dir('Backend') {
-                    sh 'dotnet test'
+                    bat 'dotnet test'
                 }
             }
         }
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
+                bat 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
             }
         }
 
         stage('Deploy to Test') {
             steps {
-                sh 'docker run -d -p 8080:80 ${DOCKER_IMAGE}:${DOCKER_TAG}'
+                bat 'docker run -d -p 8080:80 ${DOCKER_IMAGE}:${DOCKER_TAG}'
             }
         }
     }
