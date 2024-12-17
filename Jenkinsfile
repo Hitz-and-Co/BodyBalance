@@ -21,8 +21,6 @@ pipeline {
             }
         }
 
-        
-
         stage('Run Tests') {
             steps {
                 dir('Backend') {
@@ -33,13 +31,13 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                bat 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
+                bat 'docker build -t %DOCKER_IMAGE%:%DOCKER_TAG% .'
             }
         }
 
         stage('Deploy to Test') {
             steps {
-                bat 'docker run -d -p 8080:80 ${DOCKER_IMAGE}:${DOCKER_TAG}'
+                bat 'docker run -d -p 8080:80 %DOCKER_IMAGE%:%DOCKER_TAG%'
             }
         }
     }
