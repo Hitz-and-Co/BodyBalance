@@ -15,6 +15,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-1809 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["BodyBalance_Backend.csproj", "."]
+USER root
 RUN dotnet restore "./BodyBalance_Backend.csproj"
 COPY . .
 WORKDIR "/src/."
