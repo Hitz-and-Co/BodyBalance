@@ -15,16 +15,15 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0-nanoserver-1809 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["BodyBalance_Backend.csproj", "."]
-USER root
 RUN dotnet restore "./BodyBalance_Backend.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "./BodyBalance_Backend.csproj" -c %BUILD_CONFIGURATION% -o /app/build
+RUN dotnet build "./BodyBalance_Backend.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # Diese Stufe wird verwendet, um das Dienstprojekt zu veröffentlichen, das in die letzte Phase kopiert werden soll.
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./BodyBalance_Backend.csproj" -c %BUILD_CONFIGURATION% -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./BodyBalance_Backend.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # Diese Stufe wird in der Produktion oder bei Ausführung von VS im regulären Modus verwendet (Standard, wenn die Debugkonfiguration nicht verwendet wird).
 FROM base AS final
