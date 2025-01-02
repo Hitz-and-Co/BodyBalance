@@ -1,0 +1,22 @@
+# 1. Build-Umgebung (SDK zum Kompilieren der Anwendung)
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+WORKDIR /app
+
+# 2. Kopiere die Projektdateien und stelle Abhängigkeiten wieder her
+COPY *.csproj ./
+RUN dotnet restore
+
+# 3. Kopiere restliche Dateien und baue die Anwendung
+COPY . ./
+RUN dotnet publish -c Release -o out
+
+# 4. Runtime-Umgebung (minimales ASP.NET Core Image)
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build-env /app/out .
+
+# 5. Exponiere den Port 80 für den Zugriff auf die Anwendung
+EXPOSE 80
+
+# 6. Startbefehl für die Anwendung
+ENTRYPOINT ["dotnet", "BodyBalance_Backend.dll"]
