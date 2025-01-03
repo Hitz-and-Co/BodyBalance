@@ -13,13 +13,14 @@ pipeline {
             }
         }
 
-        stage('Build Backend') {
-            steps {
-                dir('Backend') {
-                    bat 'dotnet build --configuration Release'
-                }
-            }
+        stage('Docker Build') {
+    steps {
+        dir('Backend') {
+            bat 'docker build -t %DOCKER_IMAGE%:%DOCKER_TAG% .'
         }
+    }
+}
+
 
         stage('Run Tests') {
             steps {
