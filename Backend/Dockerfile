@@ -26,3 +26,12 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "BodyBalance_Backend.dll"]
+
+# Zusatz: Optimierungen für kleinere Images und bessere Performance
+# Installiere eventuell notwendige zusätzliche Bibliotheken
+RUN apk add --no-cache icu-libs
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+
+# Optional: Frontend-Konfiguration hinzufügen, falls es eine gibt
+# FROM nginx:alpine AS frontend
+# COPY /app/publish/wwwroot /usr/share/nginx/html
