@@ -31,8 +31,9 @@ pipeline {
 
         stage('Docker Build') {
             steps {
+                // Option 1: Verwenden Sie den richtigen Build-Kontext
                 dir('Backend') {
-                    bat 'docker build -t %DOCKER_IMAGE%:%DOCKER_TAG% .'              
+                    bat 'docker build -t %DOCKER_IMAGE%:%DOCKER_TAG% .'           
                 }
             }
         }
@@ -44,9 +45,8 @@ pipeline {
                 bat 'docker run -d -p 8081:80 %DOCKER_IMAGE%:%DOCKER_TAG%'
             }
         }
-
+    }
        
-
     post {
         success {
             echo 'Pipeline erfolgreich abgeschlossen!'
