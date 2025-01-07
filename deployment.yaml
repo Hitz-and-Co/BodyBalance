@@ -1,28 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: lb324
-  labels:
-    app: bodybalance
+  name: lb324-deployment # Name des Deployments
 spec:
-  replicas: 5
+  replicas: 3 # Anzahl der Pods, die erstellt werden sollen
   selector:
     matchLabels:
-      app: bodybalance
+      app: lb324 # Label zum Finden der richtigen Pods
   template:
     metadata:
       labels:
-        app: bodybalance
+        app: lb324 # Dieses Label wird den Pods zugewiesen
     spec:
       containers:
-      - name: bodybalance
-        image: damianmu07/lb324:latest
+      - name: lb324-container # Name des Containers
+        image: lb324:latest # Docker-Image, das du zuvor erstellt und hochgeladen hast
         ports:
-        - containerPort: 80
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "250m"
-          limits:
-            memory: "256Mi"
-            cpu: "500m"
+        - containerPort: 80 # Port, auf dem der Container lauscht
