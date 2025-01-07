@@ -18,7 +18,7 @@ spec:
       - name: bodybalance-backend
         image: damianmu07/lb324:latest
         ports:
-        - containerPort: 82
+        - containerPort: 80
         resources:
           requests:
             memory: "128Mi"
