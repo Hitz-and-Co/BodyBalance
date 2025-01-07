@@ -15,7 +15,7 @@ spec:
         app: bodybalance
     spec:
       containers:
-      - name: bodybalance-backend
+      - name: bodybalance
         image: damianmu07/lb324:latest
         ports:
         - containerPort: 80
