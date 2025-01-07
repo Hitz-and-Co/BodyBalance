@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lb324
+  labels:
+    app: bodybalance
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: bodybalance
+  template:
+    metadata:
+      labels:
+        app: bodybalance
+    spec:
+      containers:
+      - name: bodybalance-backend
+        image: damianmu07/lb324:latest
+        ports:
+        - containerPort: 82
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
