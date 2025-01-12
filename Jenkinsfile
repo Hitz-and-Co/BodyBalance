@@ -31,12 +31,11 @@
 
         stage('Docker Build') {
             steps {
-                // Option 1: Verwenden Sie den richtigen Build-Kontext
+                
                 dir('Backend') {
                     bat 'docker build -t %DOCKER_IMAGE%:%DOCKER_TAG% .'
                 }
-                // Alternativ: Option 2 - Direkt mit Pfadangabe
-                // bat 'docker build -t %DOCKER_IMAGE%:%DOCKER_TAG% -f Backend/Dockerfile Backend'
+                
             }
         }
 
