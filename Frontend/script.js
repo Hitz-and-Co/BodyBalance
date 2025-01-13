@@ -14,7 +14,7 @@ form.addEventListener('submit', async (event) => {
     };
 
     try {
-        const response = await fetch('http://localhost:5144/api/BodyBalance/calculate', {
+        const response = await fetch('http://localhost:5000/api/BodyBalance/calculate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -23,19 +23,26 @@ form.addEventListener('submit', async (event) => {
         });
 
         if (!response.ok) {
-            throw new Error('Fehler beim Abrufen der Ergebnisse');
+            const errorText = await response.text();
+            throw new Error(`Fehler beim Abrufen der Ergebnisse: ${errorText}`);
         }
 
         const data = await response.json();
+
+        const bmi = data.bmi || 0;
+        const tdee = data.tdee || 0;
+        const bmiFeedback = data["bmI_Feedback"] || 'Kein Feedback verfügbar.';
+        const tdeeFeedback = data["tdeE_Feedback"] || 'Kein Feedback verfügbar.';
+
         resultsDiv.style.display = 'block';
         errorDiv.style.display = 'none';
 
         resultsDiv.innerHTML = `
             <h3>Ergebnisse</h3>
-            <p><strong>BMI:</strong> ${data.bmi.toFixed(2)}</p>
-            <p>${data.bmi_Feedback || 'Kein Feedback verfügbar.'}</p>
-            <p><strong>TDEE:</strong> ${data.tdee.toFixed(2)} kcal</p>
-            <p>${data.tdee_Feedback || 'Kein Feedback verfügbar.'}</p>
+            <p><strong>BMI:</strong> ${bmi.toFixed(2)}</p>
+            <p><strong>BMI-Feedback:</strong> ${bmiFeedback}</p>
+            <p><strong>TDEE:</strong> ${tdee.toFixed(2)} kcal</p>
+            <p><strong>TDEE-Feedback:</strong> ${tdeeFeedback}</p>
         `;
     } catch (error) {
         resultsDiv.style.display = 'none';
