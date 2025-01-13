@@ -1,12 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: lb324-service # Name des Services
+  name: lb324-service
+  namespace: monitoring
+  labels:
+    app: lb324
 spec:
-  selector:
-    app: lb324 # Verknüpfung mit den Pods anhand ihres Labels
   ports:
-  - protocol: TCP
-    port: 80 # Port, auf dem der Service erreichbar ist
-    targetPort: 80 # Port im Container
-  type: LoadBalancer # Stellt die Anwendung extern bereit
+    - port: 80
+      targetPort: 5000  # Port of the application
+      name: http
+  selector:
+    app: lb324  # Match your app's pod label
+

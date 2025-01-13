@@ -6,8 +6,9 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: lb324
+      app: lb324  # Match your service label here
   endpoints:
-  - port: http
-    path: /metrics
+  - port: http  # Port name of the service
+    path: /metrics  # Path for Prometheus to scrape
     interval: 15s
+
