@@ -1,0 +1,13 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: lb324-service-monitor
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: lb324
+  endpoints:
+  - port: http
+    path: /metrics
+    interval: 15s
